@@ -106,12 +106,78 @@ char *copy_str(char *inStr, short len){
      tokens[2] = "string" 
      tokens[3] = 0
 */
-char **tokenize(char* str);
+char **tokenize(char* str){
+    int num_tokens = count_tokens(s);
+    
+    char **tokens = (char **)malloc((num_tokens + 1) * sizeof(char *));
+    
+    if (tokens == NULL) {
+        return NULL;
+    }
+
+    int i = 0;
+    char *start = token_start(s); 
+
+    while (start != NULL) {
+
+        char *end = token_terminator(start);
+        
+        short len = end - start;
+        
+        tokens[i] = copy_str(start, len);
+        
+        if (tokens[i] == NULL) {
+           
+            for (int j = 0; j < i; j++) {
+                free(tokens[j]);
+            }
+           
+            free(tokens);
+            return NULL;
+        }
+        
+        start = token_start(end);
+        
+        i++;
+       
+   }
+
+    tokens[i] = NULL;
+
+    return tokens;
+       
+};
 
 /* Prints all tokens. */
-void print_tokens(char **tokens);
+void print_tokens(char **tokens){
+   
+   if (tokens == NULL) {
+        printf("No tokens to print.\n");
+        return;
+    }
+
+    int i = 0;
+   
+    while (tokens[i] != NULL) {
+        printf("Token %d: %s\n", i + 1, tokens[i]);
+        i++;
+    }
+   
+};
 
 /* Frees all tokens and the vector containing themx. */
-void free_tokens(char **tokens);
+void free_tokens(char **tokens){
+   
+    if (tokens == NULL) return;
+
+    int i = 0;
+   
+    while (tokens[i] != NULL) {
+        free(tokens[i]); 
+        i++;
+    }
+    
+    free(tokens);
+};
 
 #endif
